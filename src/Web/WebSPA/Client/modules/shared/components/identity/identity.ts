@@ -1,5 +1,5 @@
 import { Component, OnInit, OnChanges, Output, Input, EventEmitter } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { IIdentity } from '../../models/identity.model';
 import { SecurityService } from '../../services/security.service';
@@ -29,7 +29,7 @@ export class Identity implements OnInit  {
             this.service.AuthorizedCallback();
         }
 
-        console.log('identity component, checking authorized' + this.service.IsAuthorized);
+        console.log('identity component, checking authorized ' + this.service.IsAuthorized);
         this.authenticated = this.service.IsAuthorized;
 
         if (this.authenticated) {

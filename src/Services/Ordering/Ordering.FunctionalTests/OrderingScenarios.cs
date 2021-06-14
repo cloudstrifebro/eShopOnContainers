@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using WebMVC.Models;
+using WebMVC.Services.ModelDTOs;
 using Xunit;
 
 namespace Ordering.FunctionalTests
@@ -55,7 +55,7 @@ namespace Ordering.FunctionalTests
             {
                 OrderNumber = "-1"
             };
-            return JsonConvert.SerializeObject(order);
+            return JsonSerializer.Serialize(order);
         }
     }
 }

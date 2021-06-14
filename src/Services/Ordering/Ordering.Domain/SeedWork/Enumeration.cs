@@ -11,37 +11,23 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.Domain.SeedWork
 
         public int Id { get; private set; }
 
-        protected Enumeration(){}
-
-        protected Enumeration(int id, string name)
-        {
-            Id = id;
-            Name = name;
-        }
+        protected Enumeration(int id, string name) => (Id, Name) = (id, name);
 
         public override string ToString() => Name;
-
-        public static IEnumerable<T> GetAll<T>() where T : Enumeration, new()
-        {
-            var type = typeof(T);
-            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
-
-            foreach (var info in fields)
-            {
-                var instance = new T();
-                var locatedValue = info.GetValue(instance) as T;
-
-                if (locatedValue != null)
-                    yield return locatedValue;
-            }
-        }
-
+        
+        public static IEnumerable<T> GetAll<T>() where T : Enumeration =>
+            typeof(T).GetFields(BindingFlags.Public |
+                                BindingFlags.Static |
+                                BindingFlags.DeclaredOnly)
+                     .Select(f => f.GetValue(null))
+                     .Cast<T>();
+        
         public override bool Equals(object obj)
         {
-            var otherValue = obj as Enumeration;
-
-            if (otherValue == null)
+            if (obj is not Enumeration otherValue)
+            {
                 return false;
+            }
 
             var typeMatches = GetType().Equals(obj.GetType());
             var valueMatches = Id.Equals(otherValue.Id);
@@ -57,19 +43,19 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.Domain.SeedWork
             return absoluteDifference;
         }
 
-        public static T FromValue<T>(int value) where T : Enumeration, new()
+        public static T FromValue<T>(int value) where T : Enumeration
         {
             var matchingItem = Parse<T, int>(value, "value", item => item.Id == value);
             return matchingItem;
         }
 
-        public static T FromDisplayName<T>(string displayName) where T : Enumeration, new()
+        public static T FromDisplayName<T>(string displayName) where T : Enumeration
         {
             var matchingItem = Parse<T, string>(displayName, "display name", item => item.Name == displayName);
             return matchingItem;
         }
 
-        private static T Parse<T, K>(K value, string description, Func<T, bool> predicate) where T : Enumeration, new()
+        private static T Parse<T, K>(K value, string description, Func<T, bool> predicate) where T : Enumeration
         {
             var matchingItem = GetAll<T>().FirstOrDefault(predicate);
 
@@ -79,6 +65,6 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.Domain.SeedWork
             return matchingItem;
         }
 
-        public int CompareTo(object other) => Id.CompareTo(((Enumeration) other).Id);
+        public int CompareTo(object other) => Id.CompareTo(((Enumeration)other).Id);
     }
 }

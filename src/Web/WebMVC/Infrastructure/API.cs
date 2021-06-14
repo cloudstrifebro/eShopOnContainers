@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace WebMVC.Infrastructure
+﻿namespace WebMVC.Infrastructure
 {
     public static class API
     {
@@ -55,11 +53,20 @@ namespace WebMVC.Infrastructure
             {
                 var filterQs = "";
 
-                if (brand.HasValue || type.HasValue)
+                if (type.HasValue)
                 {
-                    var brandQs = (brand.HasValue) ? brand.Value.ToString() : "null";
-                    var typeQs = (type.HasValue) ? type.Value.ToString() : "null";
-                    filterQs = $"/type/{typeQs}/brand/{brandQs}";
+                    var brandQs = (brand.HasValue) ? brand.Value.ToString() : string.Empty;
+                    filterQs = $"/type/{type.Value}/brand/{brandQs}";
+
+                }
+                else if (brand.HasValue)
+                {
+                    var brandQs = (brand.HasValue) ? brand.Value.ToString() : string.Empty;
+                    filterQs = $"/type/all/brand/{brandQs}";
+                }
+                else
+                {
+                    filterQs = string.Empty;
                 }
 
                 return $"{baseUri}items{filterQs}?pageIndex={page}&pageSize={take}";
@@ -73,27 +80,6 @@ namespace WebMVC.Infrastructure
             public static string GetAllTypes(string baseUri)
             {
                 return $"{baseUri}catalogTypes";
-            }
-        }
-
-        public static class Marketing
-        {
-            public static string GetAllCampaigns(string baseUri, int take, int page)
-            {
-                return $"{baseUri}user?pageSize={take}&pageIndex={page}";
-            }
-
-            public static string GetAllCampaignById(string baseUri, int id)
-            {
-                return $"{baseUri}{id}";
-            }
-        }
-
-        public static class Locations
-        {
-            public static string CreateOrUpdateUserLocation(string baseUri)
-            {
-                return baseUri;
             }
         }
     }
